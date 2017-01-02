@@ -1,0 +1,33 @@
+plugins {
+    id 'groovy'
+    id 'application'
+}
+
+version = '0.0.1-SNAPSHOT'
+mainClassName = 'net.vonjagdstrumel.botjevleesch.Application'
+applicationDefaultJvmArgs = ['-Xms64m', '-Xmx64m']
+compileGroovy.groovyOptions.configurationScript = file('src/config.groovy')
+compileGroovy.groovyOptions.optimizationOptions.indy = true
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile 'net.dv8tion:JDA:2.3.0_379'
+    compile 'org.codehaus.groovy:groovy-all:2.4.7'
+    compile 'commons-io:commons-io:2.5'
+    compile 'org.xerial:sqlite-jdbc:3.15.1'
+}
+
+startScripts {
+    classpath += files('src/dist')
+    doLast {
+        def windowsScriptFile = file getWindowsScript()
+        def unixScriptFile = file getUnixScript()
+        windowsScriptFile.text = windowsScriptFile.text.replace('%APP_HOME%\\lib\\dist', '%APP_HOME%')
+        unixScriptFile.text = unixScriptFile.text.replace('$APP_HOME/lib/dist', '$APP_HOME')
+    }
+}
